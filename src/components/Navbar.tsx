@@ -12,7 +12,13 @@ const navItems = [
   { label: "Contact", id: "contact" },
 ];
 
-export default function Navbar() {
+export default function Navbar({
+  darkMode,
+  toggleDarkMode,
+}: {
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+}) {
   const [activeItem, setActiveItem] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

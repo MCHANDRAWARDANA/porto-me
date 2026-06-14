@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "motion/react";
 import { Calendar, Building2, Sparkles } from "lucide-react";
 
 import telkomLogo from "../assets/images/telkom.png";
@@ -56,7 +56,7 @@ export default function Experience() {
     offset: ["start end", "end center"],
   });
 
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const scaleY = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
 
   return (
     <section
@@ -82,119 +82,23 @@ export default function Experience() {
       {/* SOFT FADE */}
       <div className="pointer-events-none absolute inset-0 z-[0] bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(248,247,243,0.35)_100%)]" />
 
-      {/* SOFT GLOWS */}
+      {/* SOFT GLOWS - Simplified */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden z-[0]">
-        <motion.div
-          animate={{
-            x: [0, 40, -20, 0],
-            y: [0, -30, 20, 0],
-            scale: [1, 1.1, 1],
-            opacity: [0.2, 0.45, 0.2],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute left-[-120px] top-20 h-[420px] w-[420px] rounded-full bg-black/5 blur-[120px]"
-        />
-
-        <motion.div
-          animate={{
-            x: [0, -50, 20, 0],
-            y: [0, 40, -20, 0],
-            scale: [1, 1.15, 1],
-            opacity: [0.2, 0.5, 0.2],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute bottom-0 right-[-120px] h-[420px] w-[420px] rounded-full bg-black/5 blur-[120px]"
-        />
+        <div className="absolute left-[-120px] top-20 h-[420px] w-[420px] rounded-full bg-black/5 blur-[120px] opacity-20" />
+        <div className="absolute bottom-0 right-[-120px] h-[420px] w-[420px] rounded-full bg-black/5 blur-[120px] opacity-20" />
       </div>
 
-      {/* DECORATIVE STARS */}
+      {/* DECORATIVE STARS - Reduced */}
       <div className="pointer-events-none absolute top-[110px] left-[70px] z-[1] text-black/85 text-3xl select-none">
-        ✦
-      </div>
-      <div className="pointer-events-none absolute top-[180px] left-[180px] z-[1] text-black/50 text-xl select-none">
         ✦
       </div>
       <div className="pointer-events-none absolute top-[260px] right-[120px] z-[1] text-black/75 text-4xl select-none">
         ✦
       </div>
-      <div className="pointer-events-none absolute top-[420px] right-[260px] z-[1] text-black/40 text-2xl select-none">
-        ✦
-      </div>
       <div className="pointer-events-none absolute bottom-[180px] left-[110px] z-[1] text-black/70 text-5xl select-none">
         ✦
       </div>
-      <div className="pointer-events-none absolute bottom-[120px] left-[280px] z-[1] text-black/45 text-2xl select-none">
-        ✦
-      </div>
       <div className="pointer-events-none absolute bottom-[90px] right-[160px] z-[1] text-black/60 text-3xl select-none">
-        ✦
-      </div>
-      {/* EXTRA STARS */}
-      <div className="pointer-events-none absolute top-[90px] right-[420px] z-[1] text-black/35 text-xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute top-[140px] left-[420px] z-[1] text-black/55 text-2xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute top-[320px] left-[80px] z-[1] text-black/45 text-xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute top-[500px] left-[220px] z-[1] text-black/60 text-3xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute top-[580px] right-[320px] z-[1] text-black/40 text-2xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute bottom-[300px] left-[420px] z-[1] text-black/50 text-xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute bottom-[260px] right-[80px] z-[1] text-black/65 text-4xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute bottom-[400px] right-[450px] z-[1] text-black/35 text-xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute bottom-[140px] left-[520px] z-[1] text-black/55 text-2xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute bottom-[80px] right-[520px] z-[1] text-black/45 text-xl select-none">
-        ✦
-      </div>
-      {/* CENTER STARS */}
-      <div className="pointer-events-none absolute top-[220px] left-1/2 -translate-x-[180px] z-[1] text-black/45 text-xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute top-[340px] left-1/2 translate-x-[140px] z-[1] text-black/60 text-2xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute top-[520px] left-1/2 -translate-x-[220px] z-[1] text-black/40 text-lg select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute top-[680px] left-1/2 translate-x-[200px] z-[1] text-black/50 text-3xl select-none">
-        ✦
-      </div>
-
-      <div className="pointer-events-none absolute top-[900px] left-1/2 -translate-x-[150px] z-[1] text-black/35 text-xl select-none">
         ✦
       </div>
 

@@ -123,35 +123,20 @@ export default function Projects() {
       {/* TOP LINE */}
       <div className="absolute top-[110px] left-0 right-0 h-px bg-[#d9d4cc] z-[1] opacity-80" />
 
-      {/* DECORATIVE STARS */}
+      {/* DECORATIVE STARS - Reduced */}
       <div className="pointer-events-none absolute top-[150px] left-[90px] z-[1] text-black/80 text-4xl select-none">
-        ✦
-      </div>
-      <div className="pointer-events-none absolute top-[250px] left-[260px] z-[1] text-black/45 text-xl select-none">
         ✦
       </div>
       <div className="pointer-events-none absolute top-[190px] right-[180px] z-[1] text-black/70 text-3xl select-none">
         ✦
       </div>
-      <div className="pointer-events-none absolute top-[420px] right-[320px] z-[1] text-black/40 text-2xl select-none">
-        ✦
-      </div>
-      <div className="pointer-events-none absolute top-[580px] left-[180px] z-[1] text-black/55 text-2xl select-none">
-        ✦
-      </div>
-      <div className="pointer-events-none absolute bottom-[260px] left-[420px] z-[1] text-black/45 text-xl select-none">
-        ✦
-      </div>
       <div className="pointer-events-none absolute bottom-[180px] right-[120px] z-[1] text-black/65 text-4xl select-none">
         ✦
       </div>
-      <div className="pointer-events-none absolute bottom-[90px] right-[420px] z-[1] text-black/35 text-xl select-none">
-        ✦
-      </div>
 
-      {/* SOFT GLOWS */}
-      <div className="pointer-events-none absolute top-20 left-[-120px] z-0 h-[320px] w-[320px] rounded-full bg-black/5 blur-[140px]" />
-      <div className="pointer-events-none absolute bottom-0 right-[-120px] z-0 h-[320px] w-[320px] rounded-full bg-black/5 blur-[140px]" />
+      {/* SOFT GLOWS - Simplified */}
+      <div className="pointer-events-none absolute top-20 left-[-120px] z-0 h-[320px] w-[320px] rounded-full bg-black/5 blur-[140px] opacity-20" />
+      <div className="pointer-events-none absolute bottom-0 right-[-120px] z-0 h-[320px] w-[320px] rounded-full bg-black/5 blur-[140px] opacity-20" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12">
         <div className="mb-16 flex flex-col justify-between gap-8 md:mb-20 md:flex-row md:items-end">

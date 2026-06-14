@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { Mail, FolderGit2, CheckCircle2, Cpu, Smartphone } from "lucide-react";
 
 import developerPortrait from "../assets/images/c.png";
@@ -15,64 +15,79 @@ export default function Hero({
 }: HeroProps) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
+  const lastUpdateRef = useRef<number>(0);
+
+  const isMobile = useMemo(
+    () => typeof window !== "undefined" && window.innerWidth < 768,
+    [],
+  );
 
   useEffect(() => {
+    if (isMobile) return; // Skip parallax on mobile for performance
+
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      // Throttle updates to 60fps max
+      const now = Date.now();
+      if (now - lastUpdateRef.current < 16) return;
+      lastUpdateRef.current = now;
 
-      setMousePos({ x, y });
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+
+      rafRef.current = requestAnimationFrame(() => {
+        const rect = containerRef.current!.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        setMousePos({ x, y });
+      });
     };
 
     const container = containerRef.current;
-
     if (container) {
-      container.addEventListener("mousemove", handleMouseMove);
+      container.addEventListener("mousemove", handleMouseMove, {
+        passive: true,
+      });
     }
 
     return () => {
       if (container) {
         container.removeEventListener("mousemove", handleMouseMove);
       }
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [isMobile]);
 
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  // Reduced parallax intensity for better performance
+  const imageParallaxX = isMobile ? 0 : mousePos.x * 10;
+  const imageParallaxY = isMobile ? 0 : mousePos.y * 10;
 
-  const imageParallaxX = isMobile ? mousePos.x * 8 : mousePos.x * 18;
-  const imageParallaxY = isMobile ? mousePos.y * 8 : mousePos.y * 18;
+  const element1X = isMobile ? 0 : mousePos.x * -10;
+  const element1Y = isMobile ? 0 : mousePos.y * -8;
 
-  const element1X = isMobile ? mousePos.x * -8 : mousePos.x * -18;
-  const element1Y = isMobile ? mousePos.y * -5 : mousePos.y * -12;
+  const element2X = isMobile ? 0 : mousePos.x * 10;
+  const element2Y = isMobile ? 0 : mousePos.y * 8;
 
-  const element2X = isMobile ? mousePos.x * 8 : mousePos.x * 18;
-  const element2Y = isMobile ? mousePos.y * 5 : mousePos.y * 12;
-
-  const element3X = isMobile ? mousePos.x * -5 : mousePos.x * -10;
-  const element3Y = isMobile ? mousePos.y * -5 : mousePos.y * -10;
+  const element3X = isMobile ? 0 : mousePos.x * -6;
+  const element3Y = isMobile ? 0 : mousePos.y * -6;
 
   const { scrollY } = useScroll();
-  const yText = useTransform(scrollY, [0, 600], [0, -60]);
-  const yImage = useTransform(scrollY, [0, 600], [0, 40]);
+  const yText = useTransform(scrollY, [0, 600], [0, -40]);
+  const yImage = useTransform(scrollY, [0, 600], [0, 30]);
 
   const fadeInUp = {
-    hidden: {
-      opacity: 0,
-      y: 30,
-    },
-    visible: (delay: number) => ({
+    hidden: { opacity: 0, y: 20 },
+    visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.8,
-        delay,
-        ease: [0.16, 1, 0.3, 1],
+        duration: 0.5,
+        delay: 0.1,
+        ease: "easeOut",
       },
-    }),
-  };
+    },
+  } as const;
 
   return (
     <section

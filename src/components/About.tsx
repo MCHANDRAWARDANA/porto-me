@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { motion, useInView } from "motion/react";
 import {
   Sparkles,
   Trophy,
@@ -19,15 +19,9 @@ export default function About() {
 
   const isInView = useInView(containerRef, {
     once: true,
-    amount: 0.25,
+    amount: 0.2,
+    margin: "0px 0px -100px 0px",
   });
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const yBlob1 = useTransform(scrollYProgress, [0, 1], [-80, 80]);
 
   const [yearsVal, setYearsVal] = useState(0);
   const [projectsVal, setProjectsVal] = useState(0);
@@ -37,7 +31,6 @@ export default function About() {
   const [tilt, setTilt] = useState({
     rx: 0,
     ry: 0,
-    ty: 0,
   });
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -45,74 +38,80 @@ export default function About() {
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
-
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-
     const cx = rect.width / 2;
     const cy = rect.height / 2;
 
-    const rx = ((y - cy) / cy) * -8;
-    const ry = ((x - cx) / cx) * 10;
-    const ty = -Math.abs((y - cy) / cy) * 6;
+    // Reduced tilt intensity for better performance
+    const rx = ((y - cy) / cy) * -3;
+    const ry = ((x - cx) / cx) * 4;
 
     setTilt({
-      rx: Math.max(Math.min(rx, 12), -12),
-      ry: Math.max(Math.min(ry, 12), -12),
-      ty,
+      rx: Math.max(Math.min(rx, 5), -5),
+      ry: Math.max(Math.min(ry, 5), -5),
     });
   };
 
   const resetTilt = () => {
-    setTilt({
-      rx: 0,
-      ry: 0,
-      ty: 0,
-    });
+    setTilt({ rx: 0, ry: 0 });
   };
 
   useEffect(() => {
     if (!isInView) return;
 
-    const yearsTimer = setInterval(() => {
-      setYearsVal((p) => (p >= 2 ? p : p + 1));
-    }, 300);
+    // Use requestAnimationFrame for smoother counter animations
+    let yearsFrame: number;
+    let projectsFrame: number;
+    let satFrame: number;
+    let speedFrame: number;
 
-    const projectsTimer = setInterval(() => {
+    const animateYears = () => {
+      setYearsVal((p) => {
+        if (p >= 2) return p;
+        const next = p + 0.1;
+        yearsFrame = requestAnimationFrame(animateYears);
+        return Math.min(next, 2);
+      });
+    };
+
+    const animateProjects = () => {
       setProjectsVal((p) => {
-        if (p >= 20) {
-          clearInterval(projectsTimer);
-          return 20;
-        }
-        return p + 2;
+        if (p >= 20) return 20;
+        const next = p + 0.5;
+        projectsFrame = requestAnimationFrame(animateProjects);
+        return Math.min(next, 20);
       });
-    }, 80);
+    };
 
-    const satTimer = setInterval(() => {
+    const animateSat = () => {
       setSatVal((p) => {
-        if (p >= 100) {
-          clearInterval(satTimer);
-          return 100;
-        }
-        return p + 5;
+        if (p >= 100) return 100;
+        const next = p + 2;
+        satFrame = requestAnimationFrame(animateSat);
+        return Math.min(next, 100);
       });
-    }, 50);
+    };
 
-    const speedTimer = setInterval(() => {
+    const animateSpeed = () => {
       setSpeedVal((p) => {
-        if (p >= 99) {
-          clearInterval(speedTimer);
-          return 99;
-        }
-        return p + 3;
+        if (p >= 99) return 99;
+        const next = p + 2;
+        speedFrame = requestAnimationFrame(animateSpeed);
+        return Math.min(next, 99);
       });
-    }, 40);
+    };
+
+    yearsFrame = requestAnimationFrame(animateYears);
+    projectsFrame = requestAnimationFrame(animateProjects);
+    satFrame = requestAnimationFrame(animateSat);
+    speedFrame = requestAnimationFrame(animateSpeed);
 
     return () => {
-      clearInterval(yearsTimer);
-      clearInterval(projectsTimer);
-      clearInterval(satTimer);
-      clearInterval(speedTimer);
+      cancelAnimationFrame(yearsFrame);
+      cancelAnimationFrame(projectsFrame);
+      cancelAnimationFrame(satFrame);
+      cancelAnimationFrame(speedFrame);
     };
   }, [isInView]);
 
@@ -139,24 +138,9 @@ export default function About() {
       {/* SOFT FADE */}
       <div className="pointer-events-none absolute inset-0 z-[0] bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(248,247,243,0.35)_100%)]" />
 
-      {/* SUBTLE GLOW */}
-      <motion.div
-        animate={{
-          scale: [1, 1.06, 1],
-          opacity: [0.18, 0.28, 0.18],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="pointer-events-none absolute right-[-8%] top-[8%] z-[0] h-[560px] w-[560px] rounded-full bg-black/5 blur-[150px]"
-      />
-
-      <motion.div
-        style={{ y: yBlob1 }}
-        className="pointer-events-none absolute left-[-10%] bottom-[-18%] z-[0] h-[520px] w-[520px] rounded-full bg-black/5 blur-[140px]"
-      />
+      {/* SUBTLE GLOW - Simplified */}
+      <div className="pointer-events-none absolute right-[-8%] top-[8%] z-[0] h-[560px] w-[560px] rounded-full bg-black/5 blur-[150px] opacity-20" />
+      <div className="pointer-events-none absolute left-[-10%] bottom-[-18%] z-[0] h-[520px] w-[520px] rounded-full bg-black/5 blur-[140px] opacity-20" />
 
       {/* EXTRA LIGHT */}
       <div className="pointer-events-none absolute inset-0 z-[0] bg-[radial-gradient(circle_at_top_right,rgba(0,0,0,0.05),transparent_35%)]" />
@@ -164,17 +148,11 @@ export default function About() {
       {/* TOP LINE */}
       <div className="absolute top-[110px] left-0 right-0 h-px bg-[#d9d4cc] z-[1] opacity-80" />
 
-      {/* DECORATIVE STARS */}
+      {/* DECORATIVE STARS - Reduced */}
       <div className="absolute top-[150px] left-[90px] text-black/80 text-4xl select-none pointer-events-none z-[1]">
         ✦
       </div>
-      <div className="absolute top-[325px] right-[230px] text-black/70 text-5xl select-none pointer-events-none z-[1]">
-        ✦
-      </div>
       <div className="absolute bottom-[145px] left-[245px] text-black/80 text-6xl select-none pointer-events-none z-[1]">
-        ✦
-      </div>
-      <div className="absolute bottom-[90px] left-[400px] text-black/45 text-3xl select-none pointer-events-none z-[1]">
         ✦
       </div>
 
@@ -244,7 +222,7 @@ export default function About() {
                 onPointerLeave={resetTilt}
                 className="relative overflow-hidden rounded-[2rem] border border-white/40 bg-white/55 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900/70"
                 style={{
-                  transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(${tilt.ty}px)`,
+                  transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
                   willChange: "transform",
                 }}
               >

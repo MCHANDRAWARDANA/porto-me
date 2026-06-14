@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "motion/react";
 
 export default function CustomCursor() {
   const [clicked, setClicked] = useState(false);
@@ -13,8 +13,9 @@ export default function CustomCursor() {
   const ringX = useMotionValue(0);
   const ringY = useMotionValue(0);
 
-  const springConfig = { stiffness: 320, damping: 28, mass: 0.4 };
-  const ringSpringConfig = { stiffness: 180, damping: 22, mass: 0.7 };
+  // Optimized spring config for better performance
+  const springConfig = { stiffness: 300, damping: 30, mass: 0.5 };
+  const ringSpringConfig = { stiffness: 150, damping: 25, mass: 0.8 };
 
   const springCursorX = useSpring(cursorX, springConfig);
   const springCursorY = useSpring(cursorY, springConfig);
@@ -23,6 +24,7 @@ export default function CustomCursor() {
   const springRingY = useSpring(ringY, ringSpringConfig);
 
   const rafRef = useRef<number | null>(null);
+  const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {
     const checkViewportAndTouch = () => {
@@ -44,6 +46,11 @@ export default function CustomCursor() {
     if (isMobile) return;
 
     const handleMouseMove = (e: MouseEvent) => {
+      // Throttle to ~60fps max
+      const now = Date.now();
+      if (now - lastUpdateRef.current < 16) return;
+      lastUpdateRef.current = now;
+
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
 
@@ -72,11 +79,11 @@ export default function CustomCursor() {
       setHovered(Boolean(interactive));
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.body.addEventListener("mouseleave", handleMouseLeave);
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
-    window.addEventListener("mouseover", handleHoverState);
+    window.addEventListener("mouseover", handleHoverState, { passive: true });
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
@@ -93,69 +100,34 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Soft halo */}
+      {/* Main cursor dot */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-50 rounded-full bg-black/10 blur-xl"
-        style={{
-          x: springRingX,
-          y: springRingY,
-          width: hovered ? 72 : 52,
-          height: hovered ? 72 : 52,
-          opacity: hovered ? 0.22 : 0.12,
-          translateX: "-50%",
-          translateY: "-50%",
-        }}
-        animate={{
-          scale: clicked ? 1.15 : 1,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 220,
-          damping: 18,
-        }}
-      />
-
-      {/* Outer ring */}
-      <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-50 rounded-full border border-black/25"
-        style={{
-          x: springRingX,
-          y: springRingY,
-          width: hovered ? 52 : 36,
-          height: hovered ? 52 : 36,
-          backgroundColor: hovered ? "rgba(0,0,0,0.04)" : "transparent",
-          translateX: "-50%",
-          translateY: "-50%",
-        }}
-        animate={{
-          scale: clicked ? 0.85 : 1,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 260,
-          damping: 20,
-        }}
-      />
-
-      {/* Main dot */}
-      <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-50 rounded-full bg-black shadow-[0_0_18px_rgba(0,0,0,0.22)]"
+        className="fixed top-0 left-0 pointer-events-none z-50 rounded-full bg-slate-900/80 dark:bg-white/90"
         style={{
           x: springCursorX,
           y: springCursorY,
-          width: hovered ? 10 : 8,
-          height: hovered ? 10 : 8,
+          width: clicked ? 6 : hovered ? 10 : 8,
+          height: clicked ? 6 : hovered ? 10 : 8,
           translateX: "-50%",
           translateY: "-50%",
+          willChange: "transform",
         }}
-        animate={{
-          scale: clicked ? 0.6 : hovered ? 1.4 : 1,
+        transition={{ duration: 0.15 }}
+      />
+
+      {/* Ring cursor */}
+      <motion.div
+        className="fixed top-0 left-0 pointer-events-none z-50 rounded-full border-2 border-slate-900/30 dark:border-white/30"
+        style={{
+          x: springRingX,
+          y: springRingY,
+          width: clicked ? 24 : hovered ? 48 : 32,
+          height: clicked ? 24 : hovered ? 48 : 32,
+          translateX: "-50%",
+          translateY: "-50%",
+          willChange: "transform",
         }}
-        transition={{
-          type: "spring",
-          stiffness: 420,
-          damping: 24,
-        }}
+        transition={{ duration: 0.2 }}
       />
     </>
   );
