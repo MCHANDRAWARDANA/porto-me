@@ -32,7 +32,6 @@ export default function CustomCursor() {
         "ontouchstart" in window ||
         navigator.maxTouchPoints > 0 ||
         window.innerWidth < 1024;
-
       setIsMobile(mobile);
     };
 
@@ -62,7 +61,7 @@ export default function CustomCursor() {
 
       setHidden(false);
     };
-
+    
     const handleMouseLeave = () => setHidden(true);
     const handleMouseDown = () => setClicked(true);
     const handleMouseUp = () => setClicked(false);

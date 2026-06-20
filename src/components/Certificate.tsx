@@ -19,31 +19,31 @@ type Certificate = {
 const certificates: Certificate[] = [
   {
     id: "1",
-    title: "Google Business Intelligence",
-    issuer: "Coursera",
-    date: "2026",
-    image: cert1,
-  },
-  {
-    id: "2",
     title: "Google AI",
     issuer: "Coursera",
     date: "2026",
     image: cert2,
   },
   {
-    id: "3",
-    title: "Google Agile Essentials",
+    id: "2",
+    title: "Google Business Intelligence",
     issuer: "Coursera",
     date: "2026",
-    image: cert3,
+    image: cert1,
   },
   {
-    id: "4",
+    id: "3",
     title: "Competency in Software Engineering",
     issuer: "SMK Islam Al Amanah Salem & Universitas Amikom Purwokerto",
     date: "2025",
     image: cert4,
+  },
+  {
+    id: "4",
+    title: "Google Agile Essentials",
+    issuer: "Coursera",
+    date: "2026",
+    image: cert3,
   },
   {
     id: "5",
@@ -82,6 +82,7 @@ export default function CertificateGalleryPage() {
     return [prev, current, next];
   }, [activeIndex, total]);
 
+  
   return (
     <section className="relative min-h-screen overflow-hidden bg-[#F8F7F3] px-4 py-10 sm:px-6 lg:px-8">
       <div

@@ -20,6 +20,7 @@ type ProjectItem = {
   categories: ProjectCategory[];
 };
 
+
 const projectItems: ProjectItem[] = [
   {
     id: "ecommerce",
